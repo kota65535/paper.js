@@ -943,7 +943,6 @@ new function() { // Injection scope for various item event handlers
         // See if we can cache these bounds. We only cache the bounds
         // transformed with the internally stored _matrix, (the default if no
         // matrix is passed).
-        matrix = matrix && matrix._orNullIfIdentity();
         // Do not transform by the internal matrix for internal, untransformed
         // bounds.
         var internal = options.internal && !noInternal,
@@ -1869,6 +1868,9 @@ new function() { // Injection scope for various item event handlers
     intersects: function(item, _matrix) {
         if (!(item instanceof Item))
             return false;
+        if (! this._applyMatrix && _matrix == null) {
+            _matrix = item.getMatrixTo(this._parent)._orNullIfIdentity();
+        }
         // Tell getIntersections() to return as soon as some intersections are
         // found, because all we care for here is there are some or none:
         return this._asPathItem().getIntersections(item._asPathItem(), null,
