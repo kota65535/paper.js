@@ -1286,6 +1286,15 @@ new function() { // Injection scope for various item event handlers
     },
 
     /**
+     * The item's transformation matrix in relation to the given item's
+     * coordinate space. Note that the view's transformations resulting from
+     * zooming and panning are not factored in.
+     */
+    getMatrixTo: function(item) {
+        return item.getGlobalMatrix().invert().append(this.getGlobalMatrix(true))
+    },
+
+    /**
      * The item's global matrix in relation to the view coordinate space. This
      * means that the view's transformations resulting from zooming and panning
      * are factored in.
@@ -1868,6 +1877,9 @@ new function() { // Injection scope for various item event handlers
     intersects: function(item, _matrix) {
         if (!(item instanceof Item))
             return false;
+        if (! this._applyMatrix && _matrix == null) {
+            _matrix = this._parent.getGlobalMatrix().invert().append(item.getGlobalMatrix(true))._orNullIfIdentity()
+        }
         // Tell getIntersections() to return as soon as some intersections are
         // found, because all we care for here is there are some or none:
         return this._asPathItem().getIntersections(item._asPathItem(), null,
@@ -3668,6 +3680,11 @@ new function() { // Injection scope for hit-test functions shared with project
      */
     localToParent: function(/* point */) {
         return this._matrix._transformPoint(Point.read(arguments));
+    },
+
+    localToOther: function(item, point) {
+        let matrix = this.getMatrixTo(item)
+        return matrix._transformPoint(Point.read([point]));
     },
 
     /**
