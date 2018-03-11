@@ -324,10 +324,12 @@ var PathItem = Item.extend(/** @lends PathItem# */{
         // intersections.
         // NOTE: The hidden argument _matrix is used internally to override the
         // passed path's transformation matrix.
+        if (! this._applyMatrix && _matrix == null) {
+            _matrix = this._parent.getGlobalMatrix().invert().append(path.getGlobalMatrix(true))._orNullIfIdentity()
+        }
         var self = this === path || !path, // self-intersections?
             matrix1 = this._matrix._orNullIfIdentity(),
-            matrix2 = self ? matrix1
-                : (_matrix || path._matrix)._orNullIfIdentity();
+            matrix2 = self ? matrix1 : _matrix
         // First check the bounds of the two paths. If they don't intersect,
         // we don't need to iterate through their curves.
         return self || this.getBounds(matrix1).intersects(
