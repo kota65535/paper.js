@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.16
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "50:9f:01:7c:88:5b:3b:6a:88:b1:b2:80:1b:b1:fc:dd"
+      - run:
+          name: checkout dist
+          command: |
+            git config user.email "kota65535@gmail.com"
+            git config user.name "Tomohiko Ozawa"
+            git checkout -t origin/dist
+            git merge develop --no-edit
+      - run:
+          name: gulp
+          command: npm install gulp
+      - run:
+          name: build
+          command: |
+            npm install
+            npm run build
+      - run:
+          name: commit
+          command: |
+            git add . --all
+            git commit -m "committed by CI"
+            git push origin dist
