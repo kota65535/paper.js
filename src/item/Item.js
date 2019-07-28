@@ -4501,10 +4501,13 @@ new function() { // Injection scope for hit-test functions shared with project
             var layer,
                 color = this.getSelectedColor(true) || (layer = this.getLayer())
                     && layer.getSelectedColor(true),
+                width = this.getSelectedWidth(true) || (layer = this.getLayer())
+                    && layer.getSelectedWidth(true),
                 mx = matrix.appended(this.getGlobalMatrix(true)),
                 half = size / 2;
             ctx.strokeStyle = ctx.fillStyle = color
                     ? color.toCanvasStyle(ctx) : '#009dec';
+            ctx.lineWidth = width || 1;
             if (itemSelected)
                 this._drawSelected(ctx, mx, selectionItems);
             if (positionSelected) {

@@ -86,7 +86,8 @@ var Style = Base.extend(new function() {
         shadowBlur: 0,
         shadowOffset: new Point(),
         // Selection
-        selectedColor: null
+        selectedColor: null,
+        selectedWidth: null
     },
     // Defaults for Group, Layer and Project (anything item that allows nesting
     // needs to be able to pass down text styles as well):
