@@ -1286,6 +1286,15 @@ new function() { // Injection scope for various item event handlers
     },
 
     /**
+     * The item's transformation matrix in relation to the given item's
+     * coordinate space. Note that the view's transformations resulting from
+     * zooming and panning are not factored in.
+     */
+    getMatrixTo: function(item) {
+        return item.getGlobalMatrix().invert().append(this.getGlobalMatrix(true));
+    },
+
+    /**
      * The item's global matrix in relation to the view coordinate space. This
      * means that the view's transformations resulting from zooming and panning
      * are factored in.
@@ -3671,6 +3680,18 @@ new function() { // Injection scope for hit-test functions shared with project
      */
     localToParent: function(/* point */) {
         return this._matrix._transformPoint(Point.read(arguments));
+    },
+
+    /**
+     * Convert the specified point from the item's own local coordinate space
+     * to the given item's coordinate space.
+     * @param {Item} item the item with a coordinate space to which the point will be converted
+     * @param {Point} point the point to be transformed
+     * @return {Point} the transformed point as a new instance
+     */
+    localToOther: function(item, point) {
+        var matrix = this.getMatrixTo(item);
+        return matrix._transformPoint(Point.read([point]));
     },
 
     /**
