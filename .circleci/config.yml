@@ -13,12 +13,11 @@ jobs:
           fingerprints:
             - "50:9f:01:7c:88:5b:3b:6a:88:b1:b2:80:1b:b1:fc:dd"
       - run:
-          name: merge develop into dist
+          name: create new dist branch
           command: |
             git config user.email "kota65535@gmail.com"
             git config user.name "Tomohiko Ozawa"
-            git checkout -t origin/dist
-            git merge develop --no-edit
+            git checkout -b dist
       - run:
           name: install gulp
           command: npm install gulp
@@ -28,8 +27,12 @@ jobs:
             npm install
             npm run build
       - run:
+          name: add dist folder to git
+          command: |
+            sed -i -e '/dist/d' .gitignore
+      - run:
           name: commit & push
           command: |
             git add . --all
             git diff-index --quiet HEAD || git commit -m "committed by CI"
-            git push origin dist
+            git push -f origin dist
