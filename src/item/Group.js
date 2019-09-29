@@ -104,6 +104,11 @@ var Group = Item.extend(/** @lends Group# */{
             // Clear cached clip item whenever hierarchy changes
             this._clipItem = undefined;
         }
+        if (flags & /*#=*/ChangeFlag.MATRIX) {
+            this._children.forEach(function(c) {
+                c._changed(/*#=*/ChangeFlag.MATRIX);
+            });
+        }
     },
 
     _getClipItem: function() {
